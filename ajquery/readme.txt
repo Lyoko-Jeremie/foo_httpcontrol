@@ -1,5 +1,5 @@
 Asynchronious foo_httpcontrol template
-0.73 http://code.google.com/p/foo-httpcontrol/
+0.73 https://bitbucket.org/oblikoamorale/foo_httpcontrol/wiki/Home
 
 *** Requirements
 
