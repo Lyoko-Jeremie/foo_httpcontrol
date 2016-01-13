@@ -4,6 +4,7 @@
 
 #define IDD_TAB1                                101
 #define IDD_TAB3                                104
+#define IDC_ALLOWED_PROTOCOLS                   1000
 #define IDC_INTERFACE                           1001
 #define IDC_PORT                                1002
 #define IDC_CONTROL_IP                          1003

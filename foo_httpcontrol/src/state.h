@@ -95,6 +95,7 @@ namespace httpc {
 	extern pfc::string_simple control_credentials_auth_hash;
 	extern pfc::list_t<pfc::string_simple> extensions;
 	extern pfc::list_t<pfc::string_simple> extension_names;
+	extern pfc::list_t<pfc::string_simple> allowed_protocols;
 	extern pfc::string8	restrict_mask;
 	extern pfc::list_t<playlist_info> playlist_list;
 	extern pfc::string8 fb2k_profile_path;
@@ -122,8 +123,9 @@ namespace httpc {
 	extern void empty_previouslyplayed();
 
 	extern void get_registered_extensions();
+	extern void set_allowed_protocols();
 	extern size_t is_extension_registered(const char *path); // infininte if not registered, list index elsewere
-	extern bool is_protocol_registered(const char *path);
+	extern bool is_protocol_allowed(const char *path);
 
 	extern void choose_srv_home_dir();
 	extern void build_restrict_to_path_list();

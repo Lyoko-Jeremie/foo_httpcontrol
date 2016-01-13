@@ -45,6 +45,7 @@ public:
 	bool			gzip_enable;
 	pfc::string8	extra_formats;
 	pfc::string8	ignored_formats;
+	pfc::string8	allowed_protocols;
 
 	config_main() { reset(); }
 	config_main(const config_main &cfg) { copy(cfg); }

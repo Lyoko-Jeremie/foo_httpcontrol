@@ -61,6 +61,7 @@ namespace httpc {
 	pfc::string_simple control_credentials_auth_hash;
 	pfc::list_t<pfc::string_simple> extensions;		// registered extensions
 	pfc::list_t<pfc::string_simple> extension_names;// registered extension names
+	pfc::list_t<pfc::string_simple> allowed_protocols;		// allowed protocols
 	pfc::string8	restrict_mask;					// restrict mask based on registered extensions
 	pfc::list_t<playlist_info> playlist_list;		// list of playlists
 	pfc::string8 fb2k_profile_path;
@@ -568,13 +569,13 @@ namespace httpc {
 		return pfc::infinite_size;
 	}
 
-	bool is_protocol_registered(const char *path)
+	bool is_protocol_allowed(const char *path)
 	{
-		// hardcoding protocols since there seems to be no way of interrogating fb2k for supported protocols list
-		// protocol should be lowercase so no case insensitive comparision is required
+		size_t c = httpc::allowed_protocols.get_count();
 
-		if (strstr(path, "http://") == path)	
-			return true;
+		for(size_t i = 0; i < c; ++i)
+			if (matchProtocol(path, allowed_protocols[i]))
+				return true;
 
 		return false;
 	}
@@ -671,6 +672,22 @@ namespace httpc {
 			restrict_mask << "*." << extensions[i];
 			if (i != extensions.get_count() - 1 )
 				restrict_mask << ";";
+		}
+	}
+
+	void set_allowed_protocols()
+	{
+		pfc::list_t<pfc::string8> protocols;
+		pfc::splitStringSimple_toList(protocols, '|', cfg.main.allowed_protocols);
+		pfc::string8 protocol;
+
+		httpc::allowed_protocols.remove_all();
+		for (t_size i = 0; i < protocols.get_count(); ++i)
+		{
+			protocol = trim(protocols[i]);
+
+			if (protocol.get_length())
+				httpc::allowed_protocols.add_item(protocol);
 		}
 	}
 

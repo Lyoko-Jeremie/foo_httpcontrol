@@ -27,8 +27,10 @@ namespace control
 				{
 					const char *item_path = p_items[i]->get_path();
 
-					if (httpc::is_extension_registered(item_path) != -1 || httpc::is_protocol_registered(item_path))
+					if (httpc::is_extension_registered(item_path) != -1 || httpc::is_protocol_allowed(item_path))
 						p_items_toadd.add_item(p_items[i]);
+					else
+						foo_error(pfc::string8() << "skipping \"" << item_path << "\": unrecognized extension or not allowed protocol");
 				}
 
 				plm->activeplaylist_add_items(p_items_toadd, bit_array_true());
@@ -754,7 +756,7 @@ namespace control
 				}
 				catch (pfc::exception &e)
 				{
-					console::error(e.what());
+					foo_error(e.what());
 				}
 
 				if (apm->is_client_present(playlist))
@@ -830,20 +832,36 @@ namespace control
 		list_t<const char *> files;	// files/dirs to be enqueued
 		pfc::string8 filename = param1;
 
-		if (( httpc::is_extension_registered(filename) != pfc::infinite_size || httpc::is_protocol_registered(filename) ) && param2.get_length() == 0 // adding a single file 
-			|| strcmp(param2, "EnqueueDirSubdirs") == 0) // adding a nested directory
+		if (param1.get_length() == 0)
+			foo_error("param1 cannot be empty");
+
+		if (param2.get_length() > 0 &&
+				(strcmp(param2, "EnqueueDir") != 0 && strcmp(param2, "EnqueueDirSubdirs") != 0))
+			foo_error(pfc::string8() << "unsupported param2 value: \"" << param2 << "\"");
+
+		if (( httpc::is_extension_registered(filename) != pfc::infinite_size || httpc::is_protocol_allowed(filename) ) && param2.get_length() == 0)  // adding a single file 
 			files.add_item(filename);
 		else
-		if (strcmp(param2, "EnqueueDir") == 0) // adding a directory without nesting;
+			if (param2.get_length() == 0)
+				foo_error(pfc::string8() << "skipping \"" << filename << "\": unrecognized extension or not allowed protocol");
+
+		if (param1.get_length() != 0 && param2.get_length() != 0)
 		{
-			browser.browse(const_cast<char *>(filename.operator const char *()));
+			if (strcmp(param2, "EnqueueDirSubdirs") == 0) // adding a nested directory
+			{
+				files.add_item(filename);
+			}
+			if (strcmp(param2, "EnqueueDir") == 0) // adding a directory without nesting;
+			{
+				browser.browse(const_cast<char *>(filename.operator const char *()));
 
-			t_size l = browser.entries.get_count();
-			for(unsigned int i = 0; i < l; ++i)
-				if (browser.entries[i].type != foo_browsefiles::ET_DIR)
-						files.add_item(browser.entries[i].path);
+				t_size l = browser.entries.get_count();
+				for(unsigned int i = 0; i < l; ++i)
+					if (browser.entries[i].type != foo_browsefiles::ET_DIR)
+							files.add_item(browser.entries[i].path);
+				}
 		}
-
+		
 		if (files.get_count())	// if there is anything to enqueue
 		{
 			static_api_ptr_t<playlist_manager>()->activeplaylist_undo_backup();

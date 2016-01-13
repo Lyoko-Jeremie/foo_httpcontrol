@@ -27,9 +27,9 @@ FONT 8, "MS Shell Dlg", 400, 0, 1
     AUTOCHECKBOX    "Credentials", IDC_CONTROL_CREDENTIALS, 37, 84, 51, 8, BS_LEFTTEXT | BS_NOTIFY, WS_EX_RIGHT
     EDITTEXT        IDC_CONTROL_USERNAME, 81, 99, 74, 13, WS_DISABLED | ES_AUTOHSCROLL
     EDITTEXT        IDC_CONTROL_PASSWORD, 220, 99, 73, 13, WS_DISABLED | ES_AUTOHSCROLL | ES_PASSWORD
-    EDITTEXT        IDC_CONTROL_PATH, 81, 138, 212, 13, ES_AUTOHSCROLL
-    EDITTEXT        IDC_EXTRA_FORMATS, 81, 158, 70, 13, ES_AUTOHSCROLL
-    AUTOCHECKBOX    "Hide non-playable files", IDC_HIDE_NONPLAYABLES, 160, 179, 133, 15, BS_LEFTTEXT | BS_NOTIFY, WS_EX_RIGHT
+    EDITTEXT        IDC_CONTROL_PATH, 92, 138, 201, 13, ES_AUTOHSCROLL
+    EDITTEXT        IDC_EXTRA_FORMATS, 92, 158, 70, 13, ES_AUTOHSCROLL
+    AUTOCHECKBOX    "Hide non-playable files", IDC_HIDE_NONPLAYABLES, 200, 179, 93, 15, BS_LEFTTEXT | BS_NOTIFY, WS_EX_RIGHT
     EDITTEXT        IDC_SERVER_ROOT, 81, 203, 183, 13, ES_AUTOHSCROLL
     PUSHBUTTON      "Open", IDC_SERVER_ROOT_BTN, 267, 203, 34, 12
     AUTOCHECKBOX    "HTTP compression (gzip)", IDC_GZIP_ENABLE, 37, 226, 116, 10, BS_LEFTTEXT, WS_EX_RIGHT
@@ -40,14 +40,16 @@ FONT 8, "MS Shell Dlg", 400, 0, 1
     RTEXT           "Remote IP", IDC_STATIC, 26, 67, 51, 11, SS_RIGHT
     RTEXT           "Username", IDC_STATIC_USERNAME, 26, 102, 51, 13, WS_DISABLED | SS_RIGHT
     RTEXT           "Password", IDC_STATIC_PASSWORD, 164, 102, 52, 13, WS_DISABLED | SS_RIGHT
-    RTEXT           "Allowed paths", IDC_STATIC, 15, 141, 62, 15, SS_RIGHT
+    RTEXT           "Allowed paths", IDC_STATIC, 24, 141, 62, 15, SS_RIGHT
     RTEXT           "Home directory", IDC_STATIC, 15, 205, 62, 12, SS_RIGHT
     CTEXT           ":", IDC_STATIC, 181, 11, 8, 12, SS_CENTER
     GROUPBOX        "File browser", IDC_STATIC, 15, 126, 286, 70
-    RTEXT           "Extra formats", IDC_STATIC, 20, 160, 57, 15, SS_RIGHT
-    LTEXT           """Allowed paths"", ""Extra formats"" and ""Hide formats"" fields accept several values separated by |.", IDC_STATIC, 30, 264, 260, 23, SS_LEFT
-    EDITTEXT        IDC_IGNORED_FORMATS, 223, 159, 70, 13, ES_AUTOHSCROLL
-    RTEXT           "Ignored formats", IDC_STATIC, 157, 161, 62, 15, SS_RIGHT
+    RTEXT           "Extra formats", IDC_STATIC, 29, 160, 57, 15, SS_RIGHT
+    LTEXT           """Allowed paths"", ""Extra formats"", ""Allowed protocols"" and ""Hide formats"" fields accept several values separated by |.", IDC_STATIC, 23, 262, 275, 20, SS_LEFT
+    EDITTEXT        IDC_IGNORED_FORMATS, 235, 159, 58, 13, ES_AUTOHSCROLL
+    RTEXT           "Ignored formats", IDC_STATIC, 169, 161, 62, 15, SS_RIGHT
+    RTEXT           "Allowed protocols", IDC_STATIC, 17, 179, 69, 15, SS_RIGHT
+    EDITTEXT        IDC_ALLOWED_PROTOCOLS, 92, 178, 70, 13, ES_AUTOHSCROLL
 }
 
 

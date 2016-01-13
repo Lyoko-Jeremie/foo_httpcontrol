@@ -229,6 +229,9 @@ public:
 
 		// get registered extensions list
 		httpc::get_registered_extensions();
+
+		httpc::set_allowed_protocols();
+
 		httpc::control_credentials_auth_hash_update();
 
 		// getting hang of where do we get templates and stuff

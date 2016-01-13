@@ -5,13 +5,30 @@
 <style type="text/css">
 	body{ font: 0.75em "Arial", sans-serif; margin: 10px; background-color: #ffffff; max-width: 800px; }
 	ul#commands li { margin-bottom: 0.5em; }
+	ol  {
+		list-style-type: none;
+		counter-reset: li-counter;
+	}
+	ol li:before {
+		font-weight: bold;
+		font-size: 2em;
+		color: red;
+		content: counter(li-counter);
+		counter-increment: li-counter;
+		padding-right: 0.5em;
+		margin-top: 0.5em;
+        }
+	ol li {
+		vertical-align: middle;
+		margin-bottom: 1em;
+	}
 	h2 {border-bottom: 1px solid gray}
 	h2#warn {color: red; border: 0px;}
 	p {text-indent: 2em; }
 </style>	
 </head>
 <body>
-<h2>foo_httpcontrol 0.97.15 02 Mar 2014</h2>
+<h2>foo_httpcontrol 0.97.16 13 Jan 2016</h2>
 <p><a href="http://code.google.com/p/foo-httpcontrol/">http://code.google.com/p/foo-httpcontrol</a></p>
 
 <h2 id="warn">Warning/disclaimer: this software comes without any warranties at all. It is still in the very early development stage, and so on, and so forth, blah-blah-blah.
@@ -60,6 +77,9 @@ customizing any template you are using, or even writing your very own one.</p>
 	<li>Limit access to component by defining a login/password pair. Untick to disable passwords.</li>
 	<li>Built-in file browser can be limited to certain paths of your file system. It is useful to simplify the browsing process or hide your secret files from prying eyes. For example, setting Allowed paths to d:\music|c:\temp\music|e:\ permits browsing only in these three file system branches.</li>
 	<li>You can specify additional file extensions to be treated as playable files by built-in file browser. It is required for opening archives containing playable files.</li>
+	<li>Ignore files with specific extensions in file browser.</li>
+	<li>Urls of specified protocols are allowed to be enqueued by Browse command. Enables enqueueing of urls handled by 3rd party components like foo_youtube (3dydfy protocol).<br>
+Suggested value setting: http|https</li>
 	<li>Removes all files which foobar2000 core considers unplayable from built-in file browser.</li>
 	<li>Specifies path where component will look for template files. Pressing Open opens specified or default directory in Explorer. If not sure, leave it blank. </li>
 	<li>Enables gzip compression of component output. Enabling it is usually harmless and quite beneficial as component generates a lot of text which is very compressible. Disable if you are using some funky browser and having unexpected problems.</li>
@@ -72,6 +92,15 @@ Don't forget to press Apply or your changes won't have any effect until fb2k is 
 
 <p>Discussion thread (please post all your questions and  suggestions  here):
 <a href="http://www.hydrogenaudio.org/forums/index.php?showtopic=62218">http://www.hydrogenaudio.org/forums/index.php?showtopic=62218</a></p>
+
+<h2>Changes history 2016</h2> 
+<p>v0.97.16 13 Jan</p>
+<ul>
+<li>add: Allowed protocols GUI setting: urls of specified protocols are allowed to be enqueued by Browse command. Previously the only hardcoded protocol was http. New setting also enables enqueueing of urls handled by 3rd party components like foo_youtube (3dydfy protocol).<br>
+Suggested value setting: http|https</li>
+<li>add: Meaningful console error messages when Browse command refuses to add specified file / location;</li>
+</ul>
+
 
 <h2>Changes history 2014</h2> 
 <p>v0.97.15 02 Mar</p>
@@ -420,14 +449,18 @@ example: ?cmd=PlayingCommand&amp;param1=Playback%20Statistics%2FRating%2F3</li>
         cmd=SetFocus<br/>
         param1=item starting from 0</li>
 
-<li>Browse directory<br/>
+<li>Enqueue single file or url<br/>
         cmd=Browse<br/>
-        param1=urlencoded path</li>
+        param1=urlencoded file path / url</li>
 
 <li>Enqueue path<br/>
+        cmd=Browse<br/>
+        param1=urlencoded path<br/>
         param2=EnqueueDir</li>
 
 <li>Enqueue path including subdirectories<br/>
+        cmd=Browse<br/>
+        param1=urlencoded path<br/>
         param2=EnqueueDirSubdirs</li>
         
 <li>Put active playlist items to playback queue <br/>
