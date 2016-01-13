@@ -1,5 +1,5 @@
 Asynchronious foo_httpcontrol template
-0.72 http://code.google.com/p/foo-httpcontrol/
+0.73 http://code.google.com/p/foo-httpcontrol/
 
 *** Requirements
 
@@ -47,6 +47,10 @@ Asynchronious foo_httpcontrol template
 	You are free to change template parameters by editing ajquery/config
 	file. For example, playlist_items_per_page variable is useful when you
 	want to permanently modify playlist page size.
+
+*** Release history 2015
+	31 Dec  0.73
+		fix:	broken remove playlist;
 
 *** Release history 2014
 

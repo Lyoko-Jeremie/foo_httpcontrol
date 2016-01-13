@@ -1037,12 +1037,9 @@ function updatetabs()
 	if (tc > fp)
 		for(var i = 0; i < tc - fp; ++i)
 		{
-			var tab = $( "#tabs" ).find( ".ui-tabs-nav li:eq("+(i+1)+")" ).remove();
-			var panelId = tab.attr( "aria-controls" );
-			$( "#" + panelId ).remove();
+			$( "#tabs" ).find( ".ui-tabs-nav li:eq("+(i+1)+")" ).remove();
 			$( "#tabs" ).tabs('refresh');
 		}
-
 
 	for (var i = 0; i < fp; ++i)
 		if (fb.playlistPlaying == i)
