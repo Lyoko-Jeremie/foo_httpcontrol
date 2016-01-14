@@ -580,6 +580,30 @@ namespace httpc {
 		return false;
 	}
 
+	bool is_path_allowed(const char *path)
+	{
+		if (cfg.restrict_to_path_list.get_count()) // allowing to browse only specified dirs (if any)
+		{
+			if (strlen(path) > 0)
+			{
+				t_size l = cfg.restrict_to_path_list.get_count();
+
+				if (strstr(path, "..\\") == NULL && strstr(path, "../") == NULL) // check for stuff like d:\music\..\..\..\temp
+					for (size_t i = 0; i < l; ++i)
+					{
+						pfc::string8 tmp(path);
+						tmp.truncate(cfg.restrict_to_path_list[i].get_length());
+
+						if (pfc::stringCompareCaseInsensitive(tmp, cfg.restrict_to_path_list[i]) == 0)
+							return true;
+					}
+				
+				return false;
+			}
+		}
+		return true;
+	}
+
 	void get_registered_extensions()
 	{
 		extensions.remove_all();
@@ -706,6 +730,9 @@ namespace httpc {
 	{
 		cfg.restrict_to_path_list.remove_all();
 		get_list(cfg.main.restrict_to_path, cfg.restrict_to_path_list, '|', true);
+
+		if (cfg.restrict_to_path_list.get_count())
+			cfg.restrict_to_path_list.add_item(" ");
 	}
 
 	void control_credentials_auth_hash_update()

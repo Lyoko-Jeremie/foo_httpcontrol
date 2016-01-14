@@ -825,35 +825,64 @@ namespace control
 		if (httpc::enqueueing)
 			return false;
 
-		pfc::string8 &param1 = cmd->get_param(0);
-		pfc::string8 &param2 = cmd->get_param(1);
+		pfc::string8 param1 = cmd->get_param(cmd->E_PARAM1);
+		pfc::string8 param2 = cmd->get_param(cmd->E_PARAM2);
 
-		foo_browsefiles browser;
 		list_t<const char *> files;	// files/dirs to be enqueued
-		pfc::string8 filename = param1;
 
+		bool is_dir = false;
+		bool is_dir_allowed = false;
+		bool is_file = false;
+		bool is_url = false;
+
+		// if no path specified, use last browse directory
 		if (param1.get_length() == 0)
-			foo_error("param1 cannot be empty");
+			param1 = cfg.misc.last_browse_dir;
 
+		// check if param2 is a valid command
 		if (param2.get_length() > 0 &&
 				(strcmp(param2, "EnqueueDir") != 0 && strcmp(param2, "EnqueueDirSubdirs") != 0))
-			foo_error(pfc::string8() << "unsupported param2 value: \"" << param2 << "\"");
+			foo_error(pfc::string8() << "ignoring param2: \"" << param2 << "\": unknown mode");
 
-		if (( httpc::is_extension_registered(filename) != pfc::infinite_size || httpc::is_protocol_allowed(filename) ) && param2.get_length() == 0)  // adding a single file 
-			files.add_item(filename);
+		// assuming path is a directory if ends with separator
+		// " " is a root shortcut, also counts as a directory
+		if (param1.ends_with('\\') || strcmp(param1, " ") == 0)
+			is_dir = true;
+
+		if (httpc::is_protocol_allowed(param1))
+			is_url = true;
+
+		if (!is_dir && !is_url)
+			is_file = true;
+
+		if (is_dir || is_file)
+		{
+			is_dir_allowed = httpc::is_path_allowed(param1);
+			if (!is_dir_allowed)
+					foo_error(pfc::string8() << "ignoring param1: \"" << param1 << "\": doesn't match Allowed paths");
+		}
+
+		// try to enqueue param1 if is a file with allowed extension, or url with allowed protocol
+		if ((is_file && httpc::is_extension_registered(param1) != pfc::infinite_size || is_url)
+			&& param2.get_length() == 0)  // add a file / location
+		{
+				files.add_item(param1);
+		}
 		else
-			if (param2.get_length() == 0)
-				foo_error(pfc::string8() << "skipping \"" << filename << "\": unrecognized extension or not allowed protocol");
+			is_file = false;
 
-		if (param1.get_length() != 0 && param2.get_length() != 0)
+		if (!is_dir && !is_file && !is_url)
+			foo_error(pfc::string8() << "ignoring param1: \"" << param1 << "\": not a directory, unrecognized extension or not allowed protocol");
+
+		if (is_dir && is_dir_allowed && param2.get_length() != 0)
 		{
 			if (strcmp(param2, "EnqueueDirSubdirs") == 0) // adding a nested directory
-			{
-				files.add_item(filename);
-			}
+				files.add_item(param1);
+
 			if (strcmp(param2, "EnqueueDir") == 0) // adding a directory without nesting;
 			{
-				browser.browse(const_cast<char *>(filename.operator const char *()));
+				foo_browsefiles browser;
+				browser.browse(const_cast<char *>(param1.operator const char *()));
 
 				t_size l = browser.entries.get_count();
 				for(unsigned int i = 0; i < l; ++i)

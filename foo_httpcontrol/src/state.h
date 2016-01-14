@@ -126,6 +126,7 @@ namespace httpc {
 	extern void set_allowed_protocols();
 	extern size_t is_extension_registered(const char *path); // infininte if not registered, list index elsewere
 	extern bool is_protocol_allowed(const char *path);
+	extern bool is_path_allowed(const char *path);
 
 	extern void choose_srv_home_dir();
 	extern void build_restrict_to_path_list();

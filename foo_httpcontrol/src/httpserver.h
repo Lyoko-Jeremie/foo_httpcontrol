@@ -63,11 +63,17 @@ public:
 class foo_httpserver_command
 {
 public:
+	enum commands { 
+		E_PARAM1=0, 
+		E_PARAM2=1, 
+		E_PARAM3=2 
+	};
+
 	foo_httpserver_command() { };
 	foo_httpserver_command(pfc::string8 cmd, pfc::string8 param1, pfc::string8 param2, pfc::string8 param3) : m_cmd(cmd), m_param1(param1), m_param2(param2), m_param3(param3) { };
 
-	pfc::string8 &get_command() { return m_cmd; }
-	pfc::string8 &get_param(int index)
+	pfc::string8 get_command() { return m_cmd; }
+	pfc::string8 get_param(int index)
 	{
 	  switch(index) {
 		case 0: return m_param1;

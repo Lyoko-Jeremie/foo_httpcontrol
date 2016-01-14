@@ -558,49 +558,30 @@ void foo_httpserv::process_request()
 						else
 						if (strcmp(cmd, "Browse") == 0)
 						{
-							if (param1.get_length() == 0)
-								param1 = cfg.misc.last_browse_dir;
-
-							if (cfg.restrict_to_path_list.get_count()) // allowing to browse only specified dirs (if any)
-    						{
-								bool isallowed = false;
-		
-								if (param1.get_length() > 0)
-								{
-									pfc::string tmp2(param1.toString());
-									t_size l = cfg.restrict_to_path_list.get_count();
-
-									if ((tmp2.indexOf("..\\") == ~0) && (tmp2.indexOf("../") == ~0)) // check for stuff like d:\music\..\..\..\temp
-									for (size_t i = 0; i < l; ++i)
-									{
-	    								pfc::string8_fast_aggressive tmp(param1);
-										tmp.truncate(cfg.restrict_to_path_list[i].get_length());
-		
-										if (pfc::stringCompareCaseInsensitive(tmp, cfg.restrict_to_path_list[i]) == 0)
-										{
-											isallowed = true;
-											break;
-    									}
-									}
-								}
-		
-								if (! isallowed)
-									param1 = " ";
-							}
-		
     						// strip file name from path if the user clicked on file
 							bool is_file = false;
+
+							bool is_url = httpc::is_protocol_allowed(param1);
 		
-							if (param1.length() > 3 && param1[param1.length()-1] != '\\')
+							// if no path specified or adding url, use last browse directory
+							if (param1.get_length() == 0 || is_url)
+								param1 = cfg.misc.last_browse_dir;
+
+							if (!is_url) 
+								if (!httpc::is_path_allowed(param1)) // allowing to browse only specified dirs (if any)
+									param1 = cfg.misc.last_browse_dir;
+
+							if (param1.length() > 3 && !param1.ends_with('\\') && !is_url)
 							{
 								char *stripped_filename = foo_browsefiles::get_path_parent((char *)param1.operator const char *());
-								if (stripped_filename)
+
+								if (stripped_filename && strlen(stripped_filename) > 2)
 								{
 									param1 = stripped_filename;
 									delete[] stripped_filename;
 								}
-								else // invalid request, displaying root
-									param1 = " ";
+								else // invalid request, displaying last browse dir
+									param1 = cfg.misc.last_browse_dir;
 
     							is_file = true;
 							}
@@ -611,7 +592,7 @@ void foo_httpserv::process_request()
 								httpc::ui::parse_buffer_browser(param1, show, timer);
 							}
 
-							if (param1.get_length() != 0 && !is_file)
+							if (param1.get_length() != 0 && !is_file && !is_url)
 								cfg.misc.last_browse_dir = param1;
 						}
     					else
